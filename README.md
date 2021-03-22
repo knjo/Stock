@@ -1,9 +1,9 @@
 # Stock
 
 --- 
--The record for my stock prediction program
--Aim to evaluate if the stock will rise or drop within the setting
--Focus on high precision with acceptiable recall rate
+- The record for my stock prediction program
+- Aim to evaluate if the stock will rise or drop within the setting
+- Focus on high precision with acceptiable recall rate
 ---
 #Package :
 ## Date :
