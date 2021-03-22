@@ -1,4 +1,5 @@
 # Stock
+
 --
 The record for my stock prediction program
 Aim to evaluate if the stock will rise or drop within the setting
