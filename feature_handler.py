@@ -61,11 +61,11 @@ def rise_estimate(df, day , upper , lower):
 # featur-------------------------------------
 def shift_price(df, day , upper ):
     i=0
-    label_drop = "pre" + str(day) + "d" + str(upper)
-    label_rise = "pre" + str(day) + "p" + str(upper)
-    list_d = [0 for x in range(day)]
-    list_p = [0 for x in range(day)]
-    while i < (len(df) -day):
+    label_rise = "pre" + str(day) + "d" + str(upper)
+    label_drop = "pre" + str(day) + "p" + str(upper)
+    list_d = []
+    list_p = []
+    while i < (len(df)):
         try :        
             D =((df['最低價'][i-day])-float(df['收盤價'][i]))/float(df['收盤價'][i])
             if -D > upper :
@@ -73,7 +73,7 @@ def shift_price(df, day , upper ):
             else :
                 list_d.append(0)                
         except Exception as e:
-            if i > 5:
+            if i > day:
                 print(e , i)
             list_d.append(0)
             
@@ -84,7 +84,7 @@ def shift_price(df, day , upper ):
             else :
                 list_p.append(0)                
         except Exception as e:
-            if i > 5:
+            if i > day:
                 print(e , i)
             list_p.append(0)
         i+=1
@@ -454,7 +454,8 @@ def 連續(df , feature ):
                     list_U.append(K)
                 
         except Exception as e:
-            print(e)
+            if i >= 1 :
+                print(e)
             list_U.append(0)
         i+=1
     df[feature] = list_U
@@ -672,4 +673,6 @@ def 超漲跌(df) :
             list_.append(0)
         i+=1
     df['超漲跌'] = list_
+
+    
 
