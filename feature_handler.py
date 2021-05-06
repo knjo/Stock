@@ -9,9 +9,8 @@ import numpy as np
 import math
 
 ## building fall class
-def drop_estimate(df, day , upper , lower):
+def drop_estimate(df, day , upper , lower , label):
     i=0
-    label = "d" + str(day) + "_" + str(upper)
     list_ = []
     while i < len(df):
         try :
@@ -34,9 +33,8 @@ def drop_estimate(df, day , upper , lower):
     df[label] = list_
     
 ## building rise class
-def rise_estimate(df, day , upper , lower):
+def rise_estimate(df, day , upper , lower ,label):
     i=0
-    label = "p" + str(day) + "_" + str(upper)
     list_ = []
     while i < len(df):
         try :
@@ -59,6 +57,33 @@ def rise_estimate(df, day , upper , lower):
     df[label] = list_
 
 # featur-------------------------------------
+def merge_yesterday(xt,yt,xte,yte,ytp,ytep,t):
+   
+    xt["label"]=yt
+    xt["預測結果"]=ytp
+    
+    
+    xte["label"]=yte
+    xte["預測結果"]=ytep
+    
+    ALL=xt.append(xte)
+
+    ALL["昨天預測結果"]=ALL["預測結果"].shift(1)
+    ALL["前天預測結果"]=ALL["預測結果"].shift(2)
+    ALL["大前天預測結果"]=ALL["預測結果"].shift(3)
+    ALL["昨天是否預測正確"]=(ALL["label"].shift(1)==ALL["昨天預測結果"]).astype(int)
+    ALL["前天是否預測正確"]=ALL["昨天是否預測正確"].shift(1)
+    ALL["大前天是否預測正確"]=ALL["昨天是否預測正確"].shift(2)
+    ALL=ALL.dropna(subset=["昨天預測結果", "前天預測結果","大前天預測結果"])
+    ALL["date"]=t["date"]
+    ALL["證券代號"]=t["證券代號"]
+    return ALL
+
+
+def 加入產概(model,產概):
+    model=model.merge(產概, how='left', left_on='證券代號', right_on='代號').drop(columns=["代號"])
+    return model
+
 def shift_price(df, day , upper ):
     i=0
     label_rise = "pre" + str(day) + "d" + str(upper)
@@ -138,7 +163,7 @@ def 增加技術指標MA(df,day,label,test_):
             if (i < day-1):
                 test_.append(0)
             else :
-                test_.append(sum(df[label][i-day:i+1])/day)
+                test_.append(sum(df[label][i-day:i])/day)
         except:
             if i > day :
                 print("Hi, i got troble in ", i)
